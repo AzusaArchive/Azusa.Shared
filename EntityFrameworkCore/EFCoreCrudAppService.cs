@@ -48,6 +48,11 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey> :
         return await DbContext.FindAsync<TEntity>(id);
     }
 
+    public async Task<TEntity> GetAsync(TKey id)
+    {
+        return await FindAsync(id) ?? throw new EntityNotFoundException(typeof(TEntity));
+    }
+
     /// <summary>
     /// 根据查询条件过滤并返回IQueryable
     /// </summary>
@@ -228,6 +233,12 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreate
     public new virtual async Task<TOutputDto?> FindAsync(TKey id)
     {
         return Mapper.Map<TOutputDto>(await base.FindAsync(id));
+    }
+
+    public new async Task<TOutputDto> GetAsync(TKey id)
+    {
+        var entity = await base.GetAsync(id);
+        return Mapper.Map<TOutputDto>(entity);
     }
 
     public new virtual Task<List<TOutputDto>> GetListAsync(SearchRule? rule = null)
