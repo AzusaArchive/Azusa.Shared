@@ -1,4 +1,6 @@
-﻿namespace Azusa.Shared.WebAPI.ApiResponses;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Azusa.Shared.WebAPI.ApiResponses;
 
 public class ObjectApiResponse<TResult> : ApiResponse
 {
@@ -7,7 +9,7 @@ public class ObjectApiResponse<TResult> : ApiResponse
     /// </summary>
     public TResult Data { get; }
 
-    public ObjectApiResponse(string code, string? message, TResult data) : base(code, message)
+    public ObjectApiResponse(int code, string? message, TResult data) : base(code, message)
     {
         Data = data;
     }

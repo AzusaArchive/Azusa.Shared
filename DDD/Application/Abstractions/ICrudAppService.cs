@@ -2,10 +2,16 @@
 
 namespace Azusa.Shared.DDD.Application.Abstractions;
 
-public interface ICrudAppService<in TKey, TOutputDto, in TCreateUpdateInput> :
-    ICrudAppService<TKey, TOutputDto, TCreateUpdateInput, TCreateUpdateInput> { }
+public interface ICrudAppService<TEntity, in TKey> :
+    ICrudAppService<TEntity, TKey, TEntity> { }
 
-public interface ICrudAppService<in TKey, TOutputDto, in TCreateInput, in TUpdateInput> :
+public interface ICrudAppService<TEntity, in TKey, TOutputDto> :
+    ICrudAppService<TEntity, TKey, TOutputDto, TEntity> { }
+
+public interface ICrudAppService<out TEntity, in TKey, TOutputDto, in TCreateUpdateInput> :
+    ICrudAppService<TEntity, TKey, TOutputDto, TCreateUpdateInput, TCreateUpdateInput> { }
+
+public interface ICrudAppService<out TEntity, in TKey, TOutputDto, in TCreateInput, in TUpdateInput> :
     ICreateUpdateAppService<TKey, TOutputDto, TCreateInput, TUpdateInput>,
-    IRetrieveAppService<TKey, TOutputDto, TOutputDto>,
+    IRetrieveAppService<TEntity, TKey, TOutputDto, TOutputDto>,
     IDeleteAppService<TKey> { }

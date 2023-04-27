@@ -15,6 +15,8 @@ public class SearchRule
     public string? Sorting { get; set; }
     public bool Descending { get; set; }
 
+    public SearchRule() { }
+
     public SearchRule(int? skip = 0, int? take = 10, string? keyword = null, string? sorting = null, bool descending = false)
     {
         Skip = skip is -1 ? null : skip;

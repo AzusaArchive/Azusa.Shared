@@ -1,21 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Azusa.Shared.WebAPI.ApiResponses
 {
     public class ApiResponse
     {
-        /// <summary>
-        /// 响应码
-        /// </summary>
-        public string Code { get; }
-
+        public int Code { get; }
         /// <summary>
         /// 响应消息
         /// </summary>
         public string? Message { get; }
 
-        public ApiResponse(string code, string? message)
+        public ApiResponse(int code, string? message)
         {
             Code = code;
             Message = message;
@@ -23,22 +20,27 @@ namespace Azusa.Shared.WebAPI.ApiResponses
 
         public static ApiResponse Ok(string? message = "操作成功")
         {
-            return new ApiResponse(ApiResponseCode.Ok, message);
+            return new ApiResponse(StatusCodes.Status200OK, message);
         }
 
-        public static ObjectApiResponse<TResult> Ok<TResult>(TResult data, string? msg = "操作成功")
+        public static ObjectApiResponse<TResult> Ok<TResult>(TResult data, string? msg = "操作成功", int code = StatusCodes.Status200OK)
         {
-            return new ObjectApiResponse<TResult>(ApiResponseCode.Ok, msg, data);
+            return new ObjectApiResponse<TResult>(code, msg, data);
         }
 
-        public static ApiResponse BadRequest(string? message = null)
+        public static ApiResponse BadRequest(string? message = "请求失败")
         {
-            return new ApiResponse(ApiResponseCode.BadRequest, message);
+            return new ApiResponse(StatusCodes.Status400BadRequest, message);
         }
 
-        public static ValidationErrorApiResponse ValidationError(IList<ValidationResult> errors, string? msg = null)
+        public static ValidationErrorApiResponse ValidationError(IList<ValidationResult> errors, string? msg = "数据校验错误")
         {
-            return new ValidationErrorApiResponse(ApiResponseCode.ValidationError, msg, errors);
+            return new ValidationErrorApiResponse(msg, errors);
+        }
+
+        public static NotFoundApiResponse NotFound(Type? type, string? msg = null)
+        {
+            return new NotFoundApiResponse($"找不到请求的{type?.Name}对象", type);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Azusa.Shared.EntityFrameworkCore;
 /// <typeparam name="TEntity">实体类型</typeparam>
 /// <typeparam name="TKey">实体主键类型</typeparam>
 public class EFCoreCrudAppService<TDbContext, TEntity, TKey> :
-    ICrudAppService<TKey, TEntity, TEntity>
+    ICrudAppService<TEntity, TKey, TEntity, TEntity>
     where TDbContext : DbContext
     where TEntity : class
 {
@@ -62,7 +62,7 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey> :
     /// </summary>
     /// <param name="rule"></param>
     /// <returns></returns>
-    protected IQueryable<TEntity> GetQueryable(SearchRule? rule = null)
+    protected IQueryable<TEntity> GetListQuery(SearchRule? rule = null)
     {
         var query = DbContext.Set<TEntity>().AsQueryable();
         if (rule is not null)
@@ -85,7 +85,12 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey> :
 
     public virtual Task<List<TEntity>> GetListAsync(SearchRule? rule = null)
     {
-        return GetQueryable(rule).ToListAsync();
+        return GetListQuery(rule).ToListAsync();
+    }
+
+    public IQueryable<TEntity> GetQueryable()
+    {
+        return DbContext.Set<TEntity>().AsQueryable();
     }
 
     public virtual async Task DeleteAsync(TKey id)
@@ -174,7 +179,7 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey> :
 /// <typeparam name="TOutputDto">输出数据传输对象类型</typeparam>
 public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto> :
     EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TEntity>,
-    ICrudAppService<TKey, TOutputDto, TEntity>
+    ICrudAppService<TEntity, TKey, TOutputDto, TEntity>
     where TDbContext : DbContext
     where TEntity : class
 {
@@ -191,7 +196,7 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto> :
 /// <typeparam name="TCreateUpdateInput">创建以及修改并用的数据传输对象类型</typeparam>
 public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreateUpdateInput> :
     EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreateUpdateInput, TCreateUpdateInput>,
-    ICrudAppService<TKey, TOutputDto, TCreateUpdateInput>
+    ICrudAppService<TEntity, TKey, TOutputDto, TCreateUpdateInput>
     where TDbContext : DbContext
     where TEntity : class
 {
@@ -211,7 +216,7 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreate
 /// <typeparam name="TUpdateInput">修改数据传输对象类型</typeparam>
 public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreateInput, TUpdateInput> :
     EFCoreCrudAppService<TDbContext, TEntity, TKey>,
-    ICrudAppService<TKey, TOutputDto, TCreateInput, TUpdateInput>
+    ICrudAppService<TEntity, TKey, TOutputDto, TCreateInput, TUpdateInput>
     where TDbContext : DbContext
     where TEntity : class
 {
@@ -247,7 +252,7 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreate
 
     public new virtual Task<List<TOutputDto>> GetListAsync(SearchRule? rule = null)
     {
-        var query = base.GetQueryable(rule);
+        var query = base.GetListQuery(rule);
         return query.ProjectTo<TOutputDto>(Mapper.ConfigurationProvider).ToListAsync();
     }
 }
