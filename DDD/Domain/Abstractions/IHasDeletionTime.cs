@@ -1,4 +1,6 @@
-﻿namespace Azusa.Shared.DDD.Domain.Abstractions;
+﻿using System;
+
+namespace Azusa.Shared.DDD.Domain.Abstractions;
 
 public interface IHasDeletionTime : ISoftDeletion
 {

@@ -1,4 +1,6 @@
-﻿namespace Azusa.Shared.LanguageExtensions;
+﻿using System;
+
+namespace Azusa.Shared.LanguageExtensions;
 
 /// <summary>
 /// Range扩展类，手动地实现IEnumerator

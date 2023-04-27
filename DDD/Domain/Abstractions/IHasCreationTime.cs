@@ -1,4 +1,6 @@
-﻿namespace Azusa.Shared.DDD.Domain.Abstractions;
+﻿using System;
+
+namespace Azusa.Shared.DDD.Domain.Abstractions;
 
 /// <summary>
 /// 实现此接口的类必须具有创建时间属性
