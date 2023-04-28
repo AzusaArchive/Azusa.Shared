@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Azusa.Shared.Search;
+﻿namespace Azusa.Shared.Search;
 
 /// <summary>
 /// 通用的API分页/排序查询条件
