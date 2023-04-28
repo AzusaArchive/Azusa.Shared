@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "7XSpQycfPpnycxKPhlxbQXnVYeNP33YC+EO7qpMUqKgkni2Hlxa9nsSMF0hvMxmQySNZNAi0AKezKtgyUpa0iw==",
+  "dgSpecHash": "ii/IBExlEvy/N+GJXXenroFmBzyyuZFQKlZ6rTk1j00X6JsmXTogJMUBvkgQut4YtSEePUU87aWUL9MX1WFPHQ==",
   "success": true,
   "projectFilePath": "E:\\程序练习\\C#\\Azusa.Shared\\Azusa.Shared.csproj",
   "expectedPackageFiles": [
@@ -9,6 +9,7 @@
     "E:\\Nuget\\Packages\\automapper.collection.entityframeworkcore\\9.0.0\\automapper.collection.entityframeworkcore.9.0.0.nupkg.sha512",
     "E:\\Nuget\\Packages\\automapper.extensions.expressionmapping\\6.0.0\\automapper.extensions.expressionmapping.6.0.0.nupkg.sha512",
     "E:\\Nuget\\Packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
+    "E:\\Nuget\\Packages\\fluentvalidation\\11.5.1\\fluentvalidation.11.5.1.nupkg.sha512",
     "E:\\Nuget\\Packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "E:\\Nuget\\Packages\\microsoft.entityframeworkcore\\7.0.5\\microsoft.entityframeworkcore.7.0.5.nupkg.sha512",
     "E:\\Nuget\\Packages\\microsoft.entityframeworkcore.abstractions\\7.0.5\\microsoft.entityframeworkcore.abstractions.7.0.5.nupkg.sha512",

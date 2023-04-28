@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Azusa.Shared.WebAPI.ApiResponses;
+namespace Azusa.Shared.AspNetCore.ApiResponses;
 
 public class NotFoundApiResponse : ApiResponse
 {

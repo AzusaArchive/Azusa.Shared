@@ -9,6 +9,7 @@ using AutoMapper.QueryableExtensions;
 using Azusa.Shared.DDD.Application.Abstractions;
 using Azusa.Shared.Exception;
 using Azusa.Shared.Search;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 
 // ReSharper disable PossibleMultipleEnumeration
@@ -220,6 +221,7 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreate
     where TDbContext : DbContext
     where TEntity : class
 {
+    //TODO:添加自动数据校验
     protected IMapper Mapper { get; init; }
 
     public EFCoreCrudAppService(TDbContext dbContext, IMapper mapper) : base(dbContext)
@@ -229,6 +231,7 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreate
 
     public virtual async Task<TOutputDto> CreateAsync(TCreateInput input)
     {
+        
         var entity = await base.CreateAsync(Mapper.Map<TEntity>(input));
         return Mapper.Map<TOutputDto>(entity);
     }
