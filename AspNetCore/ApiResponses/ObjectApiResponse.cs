@@ -1,5 +1,9 @@
 ﻿namespace Azusa.Shared.AspNetCore.ApiResponses;
 
+/// <summary>
+/// 带有数据模型的响应报文
+/// </summary>
+/// <typeparam name="TResult"></typeparam>
 public class ObjectApiResponse<TResult> : ApiResponse
 {
     /// <summary>

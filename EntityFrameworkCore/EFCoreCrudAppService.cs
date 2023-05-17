@@ -63,7 +63,7 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey> :
     /// </summary>
     /// <param name="rule"></param>
     /// <returns></returns>
-    protected IQueryable<TEntity> GetListQuery(SearchRule? rule = null)
+    protected IQueryable<TEntity> GetQueryableList(SearchRule? rule = null)
     {
         var query = DbContext.Set<TEntity>().AsQueryable();
         if (rule is not null)
@@ -86,7 +86,7 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey> :
 
     public virtual Task<List<TEntity>> GetListAsync(SearchRule? rule = null)
     {
-        return GetListQuery(rule).ToListAsync();
+        return GetQueryableList(rule).ToListAsync();
     }
 
     public IQueryable<TEntity> GetQueryable()
@@ -97,9 +97,10 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey> :
     public virtual async Task DeleteAsync(TKey id)
     {
         var entity = await DbContext.FindAsync<TEntity>(id);
-        if (entity is null)
+        if (entity == null)
             throw new ServerErrorException("无法找到对应的实体");
         DbContext.Remove(entity);
+        await DbContext.SaveChangesAsync();
     }
 
     /// <summary>
@@ -255,7 +256,7 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreate
 
     public new virtual Task<List<TOutputDto>> GetListAsync(SearchRule? rule = null)
     {
-        var query = base.GetListQuery(rule);
+        var query = base.GetQueryableList(rule);
         return query.ProjectTo<TOutputDto>(Mapper.ConfigurationProvider).ToListAsync();
     }
 }

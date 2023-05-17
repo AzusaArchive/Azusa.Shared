@@ -4,6 +4,9 @@ using System.Runtime.Serialization;
 
 namespace Azusa.Shared.Exception;
 
+/// <summary>
+/// 数据校验出现错误
+/// </summary>
 public class ValidationErrorException : System.Exception
 {
     //TODO: 使用适配器模式封装ValidationResult

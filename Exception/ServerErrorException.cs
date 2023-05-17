@@ -2,6 +2,9 @@
 
 namespace Azusa.Shared.Exception;
 
+/// <summary>
+/// 出现程序逻辑错误
+/// </summary>
 public class ServerErrorException : System.Exception
 {
     public ServerErrorException() : base("你请求的服务器发生了错误")

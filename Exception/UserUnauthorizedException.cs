@@ -2,6 +2,9 @@
 
 namespace Azusa.Shared.Exception
 {
+    /// <summary>
+    /// 请求的用户没有登录或是权限不足
+    /// </summary>
     public class UserUnauthorizedException : System.Exception
     {
         public bool NotAuthentication { get; }

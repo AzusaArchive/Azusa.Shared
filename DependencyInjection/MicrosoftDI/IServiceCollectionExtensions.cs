@@ -23,22 +23,38 @@ public static class IServiceCollectionExtensions
     public static IServiceCollection AddAppServiceFromAssembly(this IServiceCollection services, Assembly abstractionAssembly, Assembly implementationAssembly)
     {
         var abstractions = new HashSet<Type>(abstractionAssembly.GetTypes().Where(type =>
-            type.IsAssignableTo(typeof(IApplicationService)) && (type.IsInterface || type.IsAbstract)));
+            type.IsAssignableTo(typeof(IService)) && (type.IsInterface || type.IsAbstract)));
         foreach (var impl in implementationAssembly.GetTypes())
         {
-            if (impl.IsAssignableTo(typeof(IApplicationService)))
-            {
+            if (impl.IsAssignableTo(typeof(IService)) && impl.IsClass)
+            {   
+                //服务的声明周期首先取决于抽象实现的生命周期接口(ITransientService,IScopedService,ISingletonService)。
+                //如果服务没有对应的抽象，则取决于服务实现的生命周期接口
+                //默认为Scoped
+
                 //所有可实现的抽象
                 var types = abstractions.Where(type => impl.IsAssignableTo(type)).ToArray();
                 foreach (var abs in types)
                 {
-                    services.AddScoped(abs, impl);
+                    if (abs.IsAssignableTo(typeof(ITransientService)))
+                        services.AddTransient(abs, impl);
+                    else if (abs.IsAssignableTo(typeof(ISingletonService)))
+                        services.AddSingleton(abs, impl);
+                    else
+                        services.AddScoped(abs, impl);
                     Debug.WriteLine($"添加服务：<{abs.Name}> <{impl.Name}>");
                 }
 
+                //没有可实现的抽象
                 if (!types.Any())
                 {
-                    services.AddScoped(impl);
+                    if (impl.IsAssignableTo(typeof(ITransientService)))
+                        services.AddTransient(impl);
+                    else if (impl.IsAssignableTo(typeof(ISingletonService)))
+                        services.AddSingleton(impl);
+                    else
+                        services.AddScoped(impl);
+                    
                     Debug.WriteLine($"添加服务：<{impl.Name}>");
                 }
             }

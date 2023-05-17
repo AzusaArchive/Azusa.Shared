@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Azusa.Shared.Exception
 {
+    /// <summary>
+    /// 无法根据用户的输入找到需要的实体
+    /// </summary>
     public class EntityNotFoundException : System.Exception
     {
         public Type? EntityType { get; set; }

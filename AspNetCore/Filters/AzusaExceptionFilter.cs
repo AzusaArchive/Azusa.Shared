@@ -7,6 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Azusa.Shared.AspNetCore.Filters;
 
+/// <summary>
+/// 对"Azusa.Shared.Exception"命名空间中的异常自动进行处理
+/// </summary>
 public class AzusaExceptionFilter : IExceptionFilter
 {
     private readonly ILogger<AzusaExceptionFilter> _logger;
@@ -26,14 +29,14 @@ public class AzusaExceptionFilter : IExceptionFilter
             {
                 EntityNotFoundException e => new ObjectResult(ApiResponse.NotFound(e.EntityType!,e.Message)){StatusCode = StatusCodes.Status404NotFound},
                 ServerErrorException e => new ObjectResult(new ApiResponse(500,e.Message)){StatusCode = StatusCodes.Status500InternalServerError},
-                UserUnauthorizedException e => new ObjectResult(new ApiResponse(401,e.Message)){StatusCode = StatusCodes.Status401Unauthorized},
+                UserUnauthorizedException e => new ObjectResult(new ApiResponse(e.NotAuthentication?403:401,e.Message)){StatusCode = StatusCodes.Status401Unauthorized},
                 ValidationErrorException e => new ObjectResult(ApiResponse.ValidationError(e.ValidationErrors,e.Message)){StatusCode = StatusCodes.Status406NotAcceptable},
                 _ => new ObjectResult(new ApiResponse(StatusCodes.Status501NotImplemented,"请求的服务器发生了错误")){StatusCode = 501}
             };
             context.Result = result;
             context.ExceptionHandled = true;
 #if DEBUG
-            if (context.Exception is ServerErrorException || result is ObjectResult { StatusCode: 501 or 500 })
+            if (result is ObjectResult { StatusCode: 501 or 500 })
             {
                 throw context.Exception;
             }
