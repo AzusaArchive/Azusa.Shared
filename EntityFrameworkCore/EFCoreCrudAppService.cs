@@ -232,7 +232,6 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreate
 
     public virtual async Task<TOutputDto> CreateAsync(TCreateInput input)
     {
-        
         var entity = await base.CreateAsync(Mapper.Map<TEntity>(input));
         return Mapper.Map<TOutputDto>(entity);
     }
