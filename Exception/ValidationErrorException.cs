@@ -9,7 +9,6 @@ namespace Azusa.Shared.Exception;
 /// </summary>
 public class ValidationErrorException : System.Exception
 {
-    //TODO: 使用适配器模式封装ValidationResult
     public IList<ValidationResult> ValidationErrors { get; init; } = new List<ValidationResult>();
 
     public ValidationErrorException():base("提交的数据出现校验错误") { }
