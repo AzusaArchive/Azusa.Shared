@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Azusa.Shared.DDD.Application.Abstractions;
 using Azusa.Shared.Exception;
 using Azusa.Shared.Search;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 
 // ReSharper disable PossibleMultipleEnumeration
@@ -69,12 +65,12 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey> :
         if (rule is not null)
         {
             if (!string.IsNullOrWhiteSpace(rule.Keyword))
-                query = query.Where(BuildKeywordSearchExpression(rule.Keyword));
+                query = query.Where(SearchRuleHelper.BuildKeywordSearchExpression<TEntity>(rule.Keyword));
             if (rule.Sorting is not null)
                 if (rule.Descending)
-                    query = query.OrderByDescending(BuildSortingExpression(rule.Sorting));
+                    query = query.OrderByDescending(SearchRuleHelper.BuildSortingExpression<TEntity>(rule.Sorting));
                 else
-                    query = query.OrderBy(BuildSortingExpression(rule.Sorting));
+                    query = query.OrderBy(SearchRuleHelper.BuildSortingExpression<TEntity>(rule.Sorting));
             if (rule.Skip is not null)
                 query = query.Skip(rule.Skip.Value);
             if (rule.Take is not null)
@@ -101,74 +97,6 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey> :
             throw new ServerErrorException("无法找到对应的实体");
         DbContext.Remove(entity);
         await DbContext.SaveChangesAsync();
-    }
-
-    /// <summary>
-    /// 推断实体属性的特性和名称，并根据搜索关键字构建过滤器表达式树
-    /// 注意，反射推断比较消耗性能
-    /// </summary>
-    /// <param name="keyword"></param>
-    /// <returns></returns>
-    private static Expression<Func<TEntity, bool>> BuildKeywordSearchExpression(string keyword)
-    {
-        //获取实体类所有公用|实例属性
-        var propInfos =
-            typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
-        //获取所有具有SearchKeywordAttribute特性的属性，作为目标属性
-        var targetProps = propInfos.Where(info => info.GetCustomAttribute<SearchKeywordAttribute>() is not null);
-        //如果没有任何属性带SearchKeywordAttribute则按照属性名匹配，如果符合"name"或是"title"或是"content"，那就作为目标属性
-        if (!targetProps.Any())
-            targetProps = propInfos.Where(info => info.Name.ToUpper() is "NAME" or "TITLE" or "CONTENT");
-        //没有任何属性能够匹配则异常
-        if (!targetProps.Any())
-            throw new ServerErrorException("没有任何能够进行过滤查询的属性，请在属性上添加[SearchKeywordAttribute]启用过滤");
-        //检查属性是否为字符串类型
-        if (targetProps.Any(info => info.PropertyType != typeof(string)))
-            throw new ServerErrorException("过滤属性必须是字符串");
-
-        //构建 e => (e.Name || Title || Content || [property with attribute]).Contain(keyword) 表达式树
-        //参数e表达式
-        var entityExpr = Expression.Parameter(typeof(TEntity), "entity");
-        //常量关键词表达式
-        var keywordExpr = Expression.Constant(keyword);
-        //所有目标属性的表达式
-        var propExprs = targetProps.Select(info => Expression.Property(entityExpr, info)).ToArray();
-        //所有的属性调用.Contain(keyword)并且进行或运算
-        var firstProp = propExprs.First();
-        Expression resultExpr = Expression.Call(firstProp,
-            typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) })!, keywordExpr);
-        for (int i = 1; i < propExprs.Length; i++)
-        {
-            var containsExpr = Expression.Call(propExprs[i],
-                typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) })!, keywordExpr);
-            resultExpr = Expression.Or(resultExpr, containsExpr);
-        }
-
-        //构造成委托
-        var lambda = Expression.Lambda<Func<TEntity, bool>>(resultExpr, entityExpr);
-        // Console.WriteLine(lambda.ToString());
-        return lambda;
-    }
-
-    /// <summary>
-    /// 推断实体属性的名称，根据属性名列表构建排序表达式树
-    /// </summary>
-    /// <param name="sorting"></param>
-    /// <returns></returns>
-    private static Expression<Func<TEntity, object>> BuildSortingExpression(string sorting)
-    {
-        var propInfos =
-            typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
-        var targetProp = propInfos.FirstOrDefault(info =>
-            string.Equals(info.Name, sorting, StringComparison.CurrentCultureIgnoreCase));
-        if (targetProp is null)
-            throw new ServerErrorException("该实体没有与输入匹配的排序属性");
-
-        //构建entity => entity.(targetProperty) 表达式树
-        var entityExpr = Expression.Parameter(typeof(TEntity), "entity");
-        var propertyExpr = Expression.Property(entityExpr, targetProp);
-        var objectPropExpr = Expression.TypeAs(propertyExpr, typeof(object));
-        return Expression.Lambda<Func<TEntity, object>>(objectPropExpr, entityExpr);
     }
 }
 
@@ -255,7 +183,7 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreate
 
     public new virtual Task<List<TOutputDto>> GetListAsync(SearchRule? rule = null)
     {
-        var query = base.GetQueryableList(rule);
+        var query = GetQueryableList(rule);
         return query.ProjectTo<TOutputDto>(Mapper.ConfigurationProvider).ToListAsync();
     }
 }

@@ -6,9 +6,9 @@ namespace Azusa.Shared.Guid;
 public static class SequentialGuidGenerator
 {
     /// <summary>
-    /// 生成顺序的Guid
-    /// 前12位由当前时间戳构成，后20位为随机数
-    /// 并不符合RFC 4122
+    /// <para>生成顺序的Guid</para>
+    /// <para>前12位由当前时间戳构成，后20位为随机数</para>
+    /// <para>注意，此Guid值不符合RFC 4122标准</para>
     /// </summary>
     /// <returns></returns>
     public static System.Guid Create()

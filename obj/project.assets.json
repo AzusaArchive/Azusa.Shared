@@ -950,11 +950,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\程序练习\\C#\\Azusa.Shared\\Azusa.Shared.csproj",
+      "projectUniqueName": "E:\\Programming\\C#\\Azusa.Shared\\Azusa.Shared.csproj",
       "projectName": "Azusa.Shared",
-      "projectPath": "E:\\程序练习\\C#\\Azusa.Shared\\Azusa.Shared.csproj",
+      "projectPath": "E:\\Programming\\C#\\Azusa.Shared\\Azusa.Shared.csproj",
       "packagesPath": "E:\\Nuget\\Packages",
-      "outputPath": "E:\\程序练习\\C#\\Azusa.Shared\\obj\\",
+      "outputPath": "E:\\Programming\\C#\\Azusa.Shared\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "E:\\VS2019\\共享组件\\NuGetPackages"
@@ -1028,7 +1028,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.305\\RuntimeIdentifierGraph.json"
       }
     }
   }

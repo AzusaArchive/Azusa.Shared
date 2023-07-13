@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "+nCGbZVv3U28P9aZxJFKfoBe0G7v5fGJ/Hjs9lGbrS7btD9V7qwJA7OT8FKctCTK7fFbKX3hmvYq1njOJpsUhA==",
+  "dgSpecHash": "0ybfFQfia67cWcv89IvFagD78K0Lke8QWxHFppzJtbdej6u5fBArKfGVr5BOFKjOhe/qtxpPDDHvCZr4HMGA9g==",
   "success": true,
-  "projectFilePath": "E:\\程序练习\\C#\\Azusa.Shared\\Azusa.Shared.csproj",
+  "projectFilePath": "E:\\Programming\\C#\\Azusa.Shared\\Azusa.Shared.csproj",
   "expectedPackageFiles": [
     "E:\\Nuget\\Packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "E:\\Nuget\\Packages\\automapper.collection\\9.0.0\\automapper.collection.9.0.0.nupkg.sha512",
