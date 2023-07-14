@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -64,13 +61,14 @@ public static class IServiceCollectionExtensions
         Debug.WriteLine($"添加服务：<{abstraction.Name}> <{abstraction.Name}>");
         return services;
     }
-
+    
     internal static IServiceCollection AddByLifeTime(this IServiceCollection services, Type service)
     {
         if (service.IsAssignableTo(typeof(ITransientService)))
             services.AddTransient(service);
         else if (service.IsAssignableTo(typeof(ISingletonService)))
             services.AddSingleton(service);
+        //未指定生命周期默认为Scope
         else
             services.AddScoped(service);
 
