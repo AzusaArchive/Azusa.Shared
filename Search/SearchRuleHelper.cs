@@ -12,7 +12,8 @@ public static class SearchRuleHelper
     /// </summary>
     /// <param name="keyword"></param>
     /// <returns></returns>
-    public static Expression<Func<TEntity, bool>> BuildKeywordSearchExpression<TEntity>(string keyword)
+    public static Expression<Func<TEntity, bool>> BuildKeywordSearchExpression<TEntity>(string keyword,
+        bool ignoreCase = false)
     {
         //获取实体类所有公用&实例属性
         var propInfos =
@@ -27,7 +28,7 @@ public static class SearchRuleHelper
             throw new ServerErrorException("没有任何能够进行过滤查询的属性，请在属性上添加[SearchKeywordAttribute]启用过滤");
         //检查属性是否为字符串类型
         if (targetProps.Any(info => info.PropertyType != typeof(string)))
-            throw new ServerErrorException("过滤属性必须是字符串");
+            throw new ServerErrorException("使用[SearchKeywordAttribute]进行过滤的属性必须是字符串");
 
         //构建 e => (e.Name || Title || Content || [property with attribute]).Contain(keyword) 表达式树
         //参数e表达式
@@ -39,11 +40,15 @@ public static class SearchRuleHelper
         //所有的属性调用.Contain(keyword)并且进行或运算
         var firstProp = propExprs.First();
         Expression resultExpr = Expression.Call(firstProp,
-            typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) })!, keywordExpr);
+            typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string),typeof(StringComparison) })!, 
+            keywordExpr,
+            Expression.Constant(ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
         for (int i = 1; i < propExprs.Length; i++)
         {
             var containsExpr = Expression.Call(propExprs[i],
-                typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) })!, keywordExpr);
+                typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string),typeof(StringComparison) })!, 
+                keywordExpr,
+                Expression.Constant(ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
             resultExpr = Expression.Or(resultExpr, containsExpr);
         }
 
@@ -73,5 +78,4 @@ public static class SearchRuleHelper
         var objectPropExpr = Expression.TypeAs(propertyExpr, typeof(object));
         return Expression.Lambda<Func<TEntity, object>>(objectPropExpr, entityExpr);
     }
-
 }
