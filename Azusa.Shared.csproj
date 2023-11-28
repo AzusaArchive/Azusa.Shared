@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -9,7 +10,6 @@
 
     <ItemGroup>
       <PackageReference Include="AutoMapper.Collection.EntityFrameworkCore" Version="9.0.0" />
-      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
       <PackageReference Include="Caching.CSRedis" Version="3.8.670" />
       <PackageReference Include="FluentValidation" Version="11.5.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />

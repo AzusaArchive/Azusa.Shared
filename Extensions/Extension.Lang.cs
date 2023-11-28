@@ -1,9 +1,9 @@
-﻿using System;
-
-namespace Azusa.Shared.LanguageExtensions;
+﻿namespace Azusa.Shared.Extensions;
 
 /// <summary>
-/// Range扩展类，手动地实现IEnumerator
+/// 使用Range作为参数的迭代器方法
+/// <br/>
+/// 扩展foreach关键字来实现类似<c>foreach (var i in 1..5)</c>的效果
 /// </summary>
 public static class ForeachExtension
 {
@@ -52,10 +52,7 @@ public ref struct CustomIntEnumerator
         _end = end;
     }
 
-    //错误示例：不要实现IEnumerator接口！接口定义Current返回object，会装箱！
-#if false
-    public object Current => _current;
-#endif
+    /* 注意，供foeach使用的迭代器不需要实现IEnumerator接口，只需要提供Current属性以及MoveNext方法即可，*/
     public int Current => _current;
 
     public bool MoveNext()

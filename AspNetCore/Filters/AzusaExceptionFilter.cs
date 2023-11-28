@@ -28,7 +28,7 @@ public class AzusaExceptionFilter : IExceptionFilter
             IActionResult result = context.Exception switch
             {
                 EntityNotFoundException e => new ObjectResult(ApiResponse.NotFound(e.EntityType!,e.Message)){StatusCode = StatusCodes.Status404NotFound},
-                ServerErrorException e => new ObjectResult(new ApiResponse(500,e.Message)){StatusCode = StatusCodes.Status500InternalServerError},
+                ServerErrorException or ApplicationException => new ObjectResult(new ApiResponse(500,context.Exception.Message)){StatusCode = StatusCodes.Status500InternalServerError},
                 ArgumentException e => new ObjectResult(new ApiResponse(400, e.Message)){StatusCode = StatusCodes.Status400BadRequest},
                 UserUnauthorizedException e => new ObjectResult(new ApiResponse(e.NotAuthentication?403:401,e.Message)){StatusCode = e.NotAuthentication?403:401},
                 ValidationErrorException e => new ObjectResult(ApiResponse.ValidationError(e.ValidationErrors,e.Message)){StatusCode = StatusCodes.Status406NotAcceptable},
