@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Azusa.Shared.DDD.Application.Abstractions;
 using Azusa.Shared.Exception;
@@ -10,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 // ReSharper disable PossibleMultipleEnumeration
 
-namespace Azusa.Shared.EntityFrameworkCore;
+namespace Azusa.Shared.DDD.EntityFramework;
 
 /// <summary>
 /// 通用的CRUD应用服务，实现了基本增删改查方法，搭配ICrudAppService接口使用
@@ -113,7 +110,9 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto> :
     where TDbContext : DbContext
     where TEntity : class
 {
-    public EFCoreCrudAppService(TDbContext dbContext, IMapper mapper) : base(dbContext, mapper) { }
+    public EFCoreCrudAppService(TDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+    {
+    }
 }
 
 /// <summary>
@@ -130,7 +129,9 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreate
     where TDbContext : DbContext
     where TEntity : class
 {
-    public EFCoreCrudAppService(TDbContext dbContext, IMapper mapper) : base(dbContext, mapper) { }
+    public EFCoreCrudAppService(TDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+    {
+    }
 }
 
 /// <summary>
@@ -160,14 +161,14 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreate
 
     public virtual async Task<TOutputDto> CreateAsync(TCreateInput input)
     {
-        var entity = await base.CreateAsync(Mapper.Map<TEntity>(input));
-        return Mapper.Map<TOutputDto>(entity);
+        var entity = await base.CreateAsync(ThrowIfMapFailed<TCreateInput, TEntity>(Mapper.Map<TEntity>(input)));
+        return ThrowIfMapFailed<TEntity, TOutputDto>(Mapper.Map<TOutputDto>(entity));
     }
 
     public virtual async Task<TOutputDto> UpdateAsync(TKey id, TUpdateInput input)
     {
-        var entity = await base.UpdateAsync(id, Mapper.Map<TEntity>(input));
-        return Mapper.Map<TOutputDto>(entity);
+        var entity = await base.UpdateAsync(id, ThrowIfMapFailed<TUpdateInput, TEntity>(Mapper.Map<TEntity>(input)));
+        return ThrowIfMapFailed<TEntity, TOutputDto>(Mapper.Map<TOutputDto>(entity));
     }
 
     public new virtual async Task<TOutputDto?> FindAsync(TKey id)
@@ -178,12 +179,19 @@ public class EFCoreCrudAppService<TDbContext, TEntity, TKey, TOutputDto, TCreate
     public new async Task<TOutputDto> GetAsync(TKey id)
     {
         var entity = await base.GetAsync(id);
-        return Mapper.Map<TOutputDto>(entity);
+        return ThrowIfMapFailed<TEntity, TOutputDto>(Mapper.Map<TOutputDto>(entity));
     }
 
     public new virtual Task<List<TOutputDto>> GetListAsync(SearchRule? rule = null)
     {
         var query = GetQueryableList(rule);
         return query.ProjectTo<TOutputDto>(Mapper.ConfigurationProvider).ToListAsync();
+    }
+
+    protected TOut ThrowIfMapFailed<TIn, TOut>(TOut? entity)
+    {
+        if (entity is null)
+            throw new ServerErrorException($"不支持的类型映射：{typeof(TIn).Name} -> {typeof(TOut).Name}");
+        return entity;
     }
 }

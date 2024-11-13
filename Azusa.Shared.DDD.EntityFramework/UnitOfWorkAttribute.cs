@@ -1,4 +1,4 @@
-﻿namespace Azusa.Shared.DDD
+﻿namespace Azusa.Shared.DDD.EntityFramework
 {
     /// <summary>
     /// 工作单元，参数必须继承自DbContext，在方法结束后自动调用参数类型DbContext的SaveChangesAsync方法，以保持事务最终一致性

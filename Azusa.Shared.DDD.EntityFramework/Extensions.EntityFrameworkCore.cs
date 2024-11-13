@@ -1,10 +1,9 @@
 ﻿using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 using Azusa.Shared.DDD.Domain.Abstractions;
 using Azusa.Shared.Extensions;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore;
 
-namespace Azusa.Shared.EntityFrameworkCore;
+namespace Azusa.Shared.DDD.EntityFramework;
 
 public static class EFCoreExtensions
 {

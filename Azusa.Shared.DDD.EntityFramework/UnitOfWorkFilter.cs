@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Azusa.Shared.DDD
+namespace Azusa.Shared.DDD.EntityFramework
 {
     /// <summary>
     /// 工作单元操作方法过滤器，将标注了UnitOfWorkAttribute特性的操作方法视为工作单元，
